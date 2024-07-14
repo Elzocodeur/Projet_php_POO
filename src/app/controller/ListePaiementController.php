@@ -1,12 +1,9 @@
-<?php
-
-namespace App\App\Controller;
+<?php namespace App\App\Controller;
 
 use App\Core\Controller;
 use App\App\App;
 
-class ListePaiementController extends Controller
-{
+class ListePaiementController extends Controller {
     private $listePaiementModel;
     private $detteModel;
 
@@ -19,13 +16,12 @@ class ListePaiementController extends Controller
     public function afficherListePaiement()
     {
         $detteId = $_POST['id'] ?? $_GET['id'] ?? '';
-        $page = $_GET['page'] ?? 1;
-        $limit = 5;
-        $offset = ($page - 1) * $limit;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 5;
 
         if ($detteId) {
             $dette = $this->detteModel->getDetteById($detteId);
-            $paiements = $this->listePaiementModel->getPaiementsByDetteId($detteId, $offset, $limit);
+            $paiements = $this->listePaiementModel->getPaiementsByDetteId($detteId);
             $totalPaiements = $this->listePaiementModel->getTotalPaiementsByDetteId($detteId);
 
             if ($dette && $paiements) {
@@ -33,13 +29,20 @@ class ListePaiementController extends Controller
                 $utilisateur = $utilisateurModel->findById($dette->utilisateursId);
 
                 if ($utilisateur) {
+                    $totalItems = count($paiements);
+                    $totalPages = ceil($totalItems / $perPage);
+                    $offset = ($page - 1) * $perPage;
+
+                    $paginatedPaiements = array_slice($paiements, $offset, $perPage);
+
                     $this->renderView('listepaiement', [
                         'dette' => $dette,
                         'utilisateur' => $utilisateur,
-                        'paiements' => $paiements,
+                        'paiements' => $paginatedPaiements,
                         'total_paiements' => $totalPaiements->total_paiements,
-                        'page' => $page,
-                        'limit' => $limit
+                        'currentPage' => $page,
+                        'totalPages' => $totalPages,
+                        'detteId' => $detteId
                     ]);
                 } else {
                     $this->renderView('listepaiement', ['error' => 'Utilisateur non trouvé.']);

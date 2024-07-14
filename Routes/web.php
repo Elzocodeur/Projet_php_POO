@@ -27,10 +27,15 @@ $route->post("listedette", "DetteController=>listeDette");
 $route->post("effectuerPaiement", "PaiementController=>effectuerPaiement");
 $route->post("paiement", "PaiementController=>afficherPaiement");
 
-$route->get("listepaiement", "ListePaiementController=>afficherListePaiement");
+$route->get("listepaiement/", "ListePaiementController=>afficherListePaiement");
 $route->post("listepaiement", "ListePaiementController=>afficherListePaiement");
 // Dans votre fichier de routes
+$route->get('articlesdette', 'DetteArticlesController=>afficherArticles');
 $route->post('articlesdette', 'DetteArticlesController=>afficherArticles');
+
+
+
+
 
 
 

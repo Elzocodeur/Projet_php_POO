@@ -55,56 +55,63 @@
 
         <!-- Main Content -->
         <main class="flex-1 p-8">
-    <div class="bg-white border border-blue-400 p-8 rounded-lg">
-        <h1 class="text-center text-xl font-bold mb-6">Liste des paiements d'une dette</h1>
-        <?php if (isset($error)) : ?>
-            <div class="text-red-500 text-center mb-4"><?= htmlspecialchars($error) ?></div>
-        <?php else : ?>
-            <div class="flex justify-between mb-4">
-                <div>
-                    <span class="font-semibold">Client:</span> <?= htmlspecialchars($utilisateur->nom) ?>
-                </div>
-                <div>
-                    <span class="font-semibold">Montant versé:</span> <?= htmlspecialchars($dette->montant_verse) ?>
-                </div>
-                <div>
-                    <span class="font-semibold">Montant Restant:</span> <?= htmlspecialchars($dette->montant_restant) ?>
+            <div class="bg-white border border-blue-400 p-8 rounded-lg">
+                <h1 class="text-center text-xl font-bold mb-6">Liste des paiements d'une dette</h1>
+                <?php if (isset($error)) : ?>
+                    <div class="text-red-500 text-center mb-4"><?= htmlspecialchars($error) ?></div>
+                <?php else : ?>
+                    <div class="flex justify-between mb-4">
+                        <div>
+                            <span class="font-semibold">Client:</span> <?= htmlspecialchars($utilisateur->nom) ?>
+                        </div>
+                        <div>
+                            <span class="font-semibold">Montant versé:</span> <?= htmlspecialchars($dette->montant_verse) ?>
+                        </div>
+                        <div>
+                            <span class="font-semibold">Montant Restant:</span> <?= htmlspecialchars($dette->montant_restant) ?>
+                        </div>
+                    </div>
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-blue-400 text-white">
+                            <tr>
+                                <th class="py-2 px-4 border-b">Date</th>
+                                <th class="py-2 px-4 border-b">Montant</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($paiements as $paiement) : ?>
+                                <tr>
+                                    <td class="py-2 px-4 border-b text-center"><?= htmlspecialchars($paiement->date) ?></td>
+                                    <td class="py-2 px-4 border-b text-center"><?= htmlspecialchars($paiement->montant) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                               <!-- Ajout de la pagination -->
+            <?php if ($totalPages > 1): ?>
+            <div class="flex justify-center mt-4">
+                <div class="inline-flex rounded-md shadow">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="?id=<?= $detteId ?>&page=<?= $i ?>" 
+                           class="px-4 py-2 <?= $i === $currentPage 
+                                ? 'bg-blue-500 text-white' 
+                                : 'bg-white text-gray-700 hover:bg-gray-50' ?> 
+                                  text-sm font-medium border-t border-b <?= $i === 1 ? 'rounded-l-md border-l' : '' ?> 
+                                  <?= $i === $totalPages ? 'rounded-r-md border-r' : '' ?>">
+                            <?= $i ?>
+                        </a>
+                    <?php endfor; ?>
                 </div>
             </div>
-            <table class="min-w-full bg-white border border-gray-200">
-                <thead class="bg-blue-400 text-white">
-                    <tr>
-                        <th class="py-2 px-4 border-b">Date</th>
-                        <th class="py-2 px-4 border-b">Montant</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($paiements as $paiement) : ?>
-                        <tr>
-                            <td class="py-2 px-4 border-b text-center"><?= htmlspecialchars($paiement->date) ?></td>
-                            <td class="py-2 px-4 border-b text-center"><?= htmlspecialchars($paiement->montant) ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-            <div class="mt-4 flex justify-between">
-                <div>
-                    <?php if ($page > 1) : ?>
-                        <a href="listepaiement?id=<?= htmlspecialchars($dette->id) ?>&page=<?= $page - 1 ?>" class="text-blue-500 hover:text-blue-600">Page précédente</a>
-                    <?php endif; ?>
-                </div>
-                <div>
-                    <?php if (count($paiements) == $limit) : ?>
-                        <a href="listepaiement?id=<?= htmlspecialchars($dette->id) ?>&page=<?= $page + 1 ?>" class="text-blue-500 hover:text-blue-600">Page suivante</a>
-                    <?php endif; ?>
-                </div>
+            <?php endif; ?>
+
+                    <div class="mt-4 text-right">
+                        <span class="font-semibold">Montant Total:</span> <?= htmlspecialchars($total_paiements) ?>
+                    </div>
+                <?php endif; ?>
             </div>
-            <div class="mt-4 text-right">
-                <span class="font-semibold">Montant Total:</span> <?= htmlspecialchars($total_paiements) ?>
-            </div>
-        <?php endif; ?>
-    </div>
-</main>
+        </main>
+
 
 
 

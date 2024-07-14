@@ -3,17 +3,15 @@ namespace App\App\Controller;
 
 use App\Core\Controller;
 use App\App\App;
-use App\Core\Validator;
 
 class UtilisateurController extends Controller {
     private $utilisateurModel;
     private $detteModel;
-    private $validator;
 
     public function __construct() {
+        parent::__construct();
         $this->utilisateurModel = App::getInstance()->getModel("utilisateur");
         $this->detteModel = App::getInstance()->getModel("dette");
-        $this->validator = new Validator();
     }
 
     public function index() {
@@ -29,10 +27,8 @@ class UtilisateurController extends Controller {
                 'email' => 'required|email',
                 'telephone' => 'required|telephone',
                 'photo' => 'required|photo'
-                // 'rolesId' => 'required'
             ];
-    
-            // Gestion de l'upload de fichier
+
             if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
                 $photoTmpPath = $_FILES['photo']['tmp_name'];
                 $photoExtension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
@@ -46,11 +42,10 @@ class UtilisateurController extends Controller {
             } else {
                 $this->validator->addError('photo', "Le champ photo est obligatoire");
             }
-    
+
             if ($this->validator->validate($_POST, $rules)) {
                 try {
                     $this->utilisateurModel->save($_POST);
-                    // Rediriger ou vider les champs après l'ajout réussi
                     $_POST = [];
                     $this->renderView('utilisateurs', ['success' => 'Utilisateur ajouté avec succès']);
                 } catch (\Exception $e) {
@@ -67,8 +62,7 @@ class UtilisateurController extends Controller {
         }
     }
 
-    public function checkDettes()
-    {
+    public function checkDettes() {
         $utilisateurId = $_POST['utilisateurId'] ?? 0;
         $paidDettes = $this->detteModel->getPaidDettesByUtilisateurId($utilisateurId);
 
@@ -80,41 +74,19 @@ class UtilisateurController extends Controller {
 
         $this->renderView('utilisateurs', ['dette_status' => $detteStatus]);
     }
-    
 
-    public function searchUser(){
+    public function searchUser() {
         $telephone = $_POST['telephone'] ?? '';
         $utilisateur = $this->utilisateurModel->findByTelephone($telephone);
         if ($utilisateur) {
             $dettes = $this->detteModel->getTotalDettesByUtilisateurId($utilisateur->id);
-            sleep(10); // Délai d'attente de 20 secondes
+            sleep(5);
             $data['utilisateur'] = $utilisateur;
             $data['dettes'] = $dettes;
         } else {
             $data['error'] = 'Aucun utilisateur trouvé avec ce numéro de téléphone.';
         }
-            
+
         $this->renderView('utilisateurs', $data);
-
     }
-    
-
-    // public function recherche() {
-    //     $data = [];
-    //     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    //         $telephone = $_POST['telephone'] ?? '';
-            
-    //         $utilisateur = $this->utilisateurModel->findByTelephone($telephone);
-            
-    //         if ($utilisateur) {
-    //             $dettes = $this->detteModel->getTotalDettesByUtilisateurId($utilisateur->id);
-    //             $data['utilisateur'] = $utilisateur;
-    //             $data['dettes'] = $dettes;
-    //         } else {
-    //             $data['error'] = 'Aucun utilisateur trouvé avec ce numéro de téléphone.';
-    //         }
-    //     }
-    //     $this->renderView('utilisateurs', $data);
-    // }
-    // Ajoutez d'autres méthodes selon vos besoins
 }

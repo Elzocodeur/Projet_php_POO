@@ -11,17 +11,28 @@ class DetteArticlesController extends Controller {
     }
 
     public function afficherArticles() {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $detteId = $_POST['articles'] ?? '';
+        $detteId = $_POST['articles'] ?? $_GET['detteId'] ?? null;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 2;
 
+        if ($detteId) {
             $dette = $this->detteModel->getDetteById($detteId);
             $articles = $this->detteModel->articles($detteId);
             $utilisateur = $this->detteModel->utilisateur($dette->utilisateursId);
 
+            $totalArticles = count($articles);
+            $totalPages = ceil($totalArticles / $perPage);
+            $offset = ($page - 1) * $perPage;
+
+            $paginatedArticles = array_slice($articles, $offset, $perPage);
+
             $this->renderView('dettearticles', [
                 'dette' => $dette,
-                'articles' => $articles,
-                'utilisateur' => $utilisateur
+                'articles' => $paginatedArticles,
+                'utilisateur' => $utilisateur,
+                'currentPage' => $page,
+                'totalPages' => $totalPages,
+                'detteId' => $detteId
             ]);
         } else {
             $this->renderView('dettesarticles', ['error' => 'Aucune dette sélectionnée.']);

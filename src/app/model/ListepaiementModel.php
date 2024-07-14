@@ -13,9 +13,9 @@ class ListepaiementModel extends Model
         return PaiementEntity::class;
     }
 
-    public function getPaiementsByDetteId($detteId, $offset, $limit)
+    public function getPaiementsByDetteId($detteId)
     {
-        $sql = "SELECT * FROM $this->table WHERE dettesId = :dettesId LIMIT $offset, $limit";
+        $sql = "SELECT * FROM $this->table WHERE dettesId = :dettesId";
         return $this->database->prepare($sql, ['dettesId' => $detteId], $this->getEntity());
     }
 

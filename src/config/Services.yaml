@@ -1,0 +1,3 @@
+Services:
+  Validator:
+    class: App\Core\Validator\ConcreteValidator

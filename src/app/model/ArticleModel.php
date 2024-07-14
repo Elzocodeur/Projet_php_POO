@@ -15,4 +15,6 @@ class ArticleModel extends Model {
     public function dettes($id) {
         return $this->belongsToMany(DetteModel::class, 'dettearticles', 'articlesId', 'dettesId', $id);
     }
+
+    
 }

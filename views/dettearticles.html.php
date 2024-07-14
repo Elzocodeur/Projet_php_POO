@@ -98,6 +98,18 @@
                         <?php endif; ?>
                     </tbody>
                 </table>
+                <!-- Ajout de la pagination -->
+<?php if ($totalPages > 1): ?>
+<div class="mt-4 flex justify-center">
+    <nav class="inline-flex rounded-md shadow">
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <a href="/articlesdette?detteId=<?= $detteId ?>&page=<?= $i ?>" class="px-4 py-2 <?= $i === $currentPage ? 'bg-blue-500 text-white' : 'bg-white text-gray-700' ?> border border-gray-300 text-sm font-medium hover:bg-gray-50">
+                <?= $i ?>
+            </a>
+        <?php endfor; ?>
+    </nav>
+</div>
+<?php endif; ?>
             </div>
         </main>
 

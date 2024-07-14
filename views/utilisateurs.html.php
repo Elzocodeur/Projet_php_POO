@@ -122,33 +122,58 @@
 
                     <div class="w-full md:w-1/2 bg-white p-4 rounded shadow-md">
                         <h2 class="text-xl font-bold mb-4">Suivi Client</h2>
-                        <form method="POST" action="test">
+                        <form method="POST" action="test" id="searchForm">
                             <div class="mb-4">
                                 <label for="telephone" class="block text-sm font-medium text-gray-700">Téléphone:</label>
                                 <div class="flex">
                                     <input type="text" id="telephone" name="telephone" placeholder="Rechercher un client" class="flex-1 p-2 border border-gray-300 rounded-md" value="<?= isset($_POST['telephone']) ? htmlspecialchars($_POST['telephone']) : '' ?>">
-                                    <button type="submit" class="ml-2 px-4 py-2 btn-blue text-white rounded-md">Ok</button>
+                                    <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-md">Ok</button>
                                 </div>
                             </div>
                         </form>
 
-                        <?php if (isset($utilisateur)) : ?>
-
-                            <div class="border p-4 rounded-md mb-4">
-                            <form action="listedette" method="POST">
-                            <input type="hidden" name="telephone" value="<?= htmlspecialchars($utilisateur->telephone) ?>">
+                        <!-- Placeholder Skeleton Loader -->
+                        <div id="skeleton" class="hidden">
+                            <div class="border p-4 rounded-md mb-4 animate-pulse">
                                 <div class="flex items-center mb-4">
-                                    <span class="font-medium text-gray-700 mr-2">Client:</span>
-                                    <button class="ml-auto px-4 py-2 btn-blue text-white rounded-md mr-2">Nouvelle</button>
-                                    <button type="submit" name="dette" class="px-4 py-2 btn-blue text-white rounded-md">Dette</button>
+                                    <div class="h-4 bg-gray-400 rounded w-1/3"></div>
+                                    <div class="ml-auto h-8 bg-gray-400 rounded w-1/6"></div>
+                                    <div class="ml-2 h-8 bg-gray-400 rounded w-1/6"></div>
                                 </div>
-                            </form>
                                 <div class="flex flex-col md:flex-row items-center mb-4">
                                     <div class="w-full md:w-1/3 mb-4 md:mb-0">
                                         <div class="p-2 w-full border border-gray-300 rounded-md text-center">
-                                            <img src="<?= htmlspecialchars($_ENV['WEBROOT'].$utilisateur->photo) ?>" alt="Client Image" class="mx-auto">
-                                            <?php
-                                            ?>
+                                            <div class="h-32 bg-gray-400 rounded"></div>
+                                        </div>
+                                    </div>
+                                    <div class="w-full md:w-2/3 md:ml-4">
+                                        <div class="h-4 bg-gray-400 rounded mb-2"></div>
+                                        <div class="h-4 bg-gray-400 rounded mb-2"></div>
+                                        <div class="h-4 bg-gray-400 rounded"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="h-4 bg-gray-400 rounded mb-2"></div>
+                                    <div class="h-4 bg-gray-400 rounded mb-2"></div>
+                                    <div class="h-4 bg-gray-400 rounded"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php if (isset($utilisateur)) : ?>
+                            <div class="border p-4 rounded-md mb-4">
+                                <form action="listedette" method="POST">
+                                    <input type="hidden" name="telephone" value="<?= htmlspecialchars($utilisateur->telephone) ?>">
+                                    <div class="flex items-center mb-4">
+                                        <span class="font-medium text-gray-700 mr-2">Client:</span>
+                                        <button class="ml-auto px-4 py-2 bg-blue-500 text-white rounded-md mr-2">Nouvelle</button>
+                                        <button type="submit" name="dette" class="px-4 py-2 bg-blue-500 text-white rounded-md">Dette</button>
+                                    </div>
+                                </form>
+                                <div class="flex flex-col md:flex-row items-center mb-4">
+                                    <div class="w-full md:w-1/3 mb-4 md:mb-0">
+                                        <div class="p-2 w-full border border-gray-300 rounded-md text-center">
+                                            <img src="<?= htmlspecialchars($_ENV['WEBROOT'] . $utilisateur->photo) ?>" alt="Client Image" class="mx-auto">
                                         </div>
                                     </div>
                                     <div class="w-full md:w-2/3 md:ml-4">
@@ -169,6 +194,13 @@
                             <p class="text-red-500"><?= htmlspecialchars($error) ?></p>
                         <?php endif; ?>
                     </div>
+
+                    <script>
+                        document.getElementById('searchForm').addEventListener('submit', function(e) {
+                            document.getElementById('skeleton').classList.remove('hidden');
+                        });
+                    </script>
+
                 </div>
             </div>
         </main>
